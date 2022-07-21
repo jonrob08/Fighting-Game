@@ -6,20 +6,30 @@ canvas.height = 576;
 
 ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-const gravity = 0.02
+const gravity = 0.5
 
 class Sprite {
     // Since we always want to set a position first and a velocity second, we will wrap the two parameters in {} to create a singular object
-    constructor({ position, velocity }) {
+    constructor({ position, velocity, color = 'red' }) {
         this.position = position
         this.velocity = velocity
         this.height = 150
         this.lastKey
+        this.hitBox = {
+            position: this.position,
+            width: 100,
+            height: 50
+        }
+        this.color = color
     }
 
     draw() {
-        ctx.fillStyle = 'red'
+        ctx.fillStyle = this.color
         ctx.fillRect(this.position.x, this.position.y, 50, this.height)
+
+        // hit box is drawn here
+        ctx.fillStyle = 'green'
+        ctx.fillRect(this.hitBox.position.x, this.hitBox.position.y, this.hitBox.width, this.hitBox.height)
     }
 
     update() {
@@ -58,7 +68,8 @@ const enemy = new Sprite({
     velocity: {
         x:0,
         y:0
-    }
+    },
+    color: 'blue'
 })
 
 enemy.draw()
@@ -97,18 +108,18 @@ function animate() {
     player.velocity.x = 0
 
     if (keys.a.pressed && lastKey === 'a') {
-        player.velocity.x = -1
+        player.velocity.x = -3
     } else if (keys.d.pressed && lastKey === 'd') {
-        player.velocity.x = 1
+        player.velocity.x = 3
     }
 
     // Enemy Movement
     enemy.velocity.x = 0
     
     if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
-        enemy.velocity.x = -1
+        enemy.velocity.x = -3
     } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
-        enemy.velocity.x = 1
+        enemy.velocity.x = 3
     }
 }
 
@@ -125,7 +136,7 @@ window.addEventListener('keydown', (e) => {
             lastKey = 'a'
             break
         case 'w':
-            player.velocity.y = -2
+            player.velocity.y = -20
             break
         case 'ArrowRight':
             keys.ArrowRight.pressed = true
@@ -136,7 +147,7 @@ window.addEventListener('keydown', (e) => {
             enemy.lastKey = 'ArrowLeft'
             break
         case 'ArrowUp':
-            enemy.velocity.y = -2
+            enemy.velocity.y = -20
             break
     }
     console.log(e.key)
