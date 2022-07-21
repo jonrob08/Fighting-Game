@@ -28,6 +28,7 @@ class Sprite {
         }
         this.color = color
         this.isAttacking
+        this.health = 100
     }
 
     draw() {
@@ -125,7 +126,10 @@ function rectangularCollisionDetect({
     rectangle1, rectangle2
 }) {
     return (
-        rectangle1.hitBox.position.x + rectangle1.hitBox.width >= rectangle2.position.x && rectangle1.hitBox.position.x <= rectangle2.position.x + rectangle2.width && rectangle1.hitBox.position.y + rectangle1.hitBox.height >= rectangle2.position.y && rectangle1.hitBox.position.y <= rectangle2.position.y + rectangle2.height
+        rectangle1.hitBox.position.x + rectangle1.hitBox.width >= rectangle2.position.x 
+        && rectangle1.hitBox.position.x <= rectangle2.position.x + rectangle2.width 
+        && rectangle1.hitBox.position.y + rectangle1.hitBox.height >= rectangle2.position.y 
+        && rectangle1.hitBox.position.y <= rectangle2.position.y + rectangle2.height
     )
 }
 
@@ -154,7 +158,7 @@ function animate() {
         enemy.velocity.x = 3
     }
 
-    // Detect Collision
+    // Detect Collision - ATTACK
     if ( 
         rectangularCollisionDetect({
             rectangle1: player,
@@ -162,7 +166,9 @@ function animate() {
         }) && player.isAttacking
     ) {
         player.isAttacking = false;
-        console.log('PLAYER HIT!');
+        enemy.health -= 20
+        console.log('PLAYER HIT ENEMY!');
+        document.querySelector('#enemyHealth').style.width = enemy.health + "%"
     }
 
     if ( 
@@ -172,7 +178,7 @@ function animate() {
         }) && enemy.isAttacking
     ) {
         enemy.isAttacking = false;
-        console.log('ENEMY HIT!');
+        console.log('ENEMY HIT PLAYER!');
     }
 }
 
