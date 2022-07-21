@@ -13,6 +13,7 @@ class Sprite {
     constructor({ position, velocity, color = 'red' }) {
         this.position = position
         this.velocity = velocity
+        this.width = 50
         this.height = 150
         this.lastKey
         this.hitBox = {
@@ -21,15 +22,18 @@ class Sprite {
             height: 50
         }
         this.color = color
+        this.isAttacking
     }
 
     draw() {
         ctx.fillStyle = this.color
-        ctx.fillRect(this.position.x, this.position.y, 50, this.height)
+        ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
 
         // hit box is drawn here
-        ctx.fillStyle = 'green'
-        ctx.fillRect(this.hitBox.position.x, this.hitBox.position.y, this.hitBox.width, this.hitBox.height)
+        if (this.isAttacking) {
+            ctx.fillStyle = 'green'
+            ctx.fillRect(this.hitBox.position.x, this.hitBox.position.y, this.hitBox.width, this.hitBox.height)
+        }
     }
 
     update() {
@@ -43,6 +47,13 @@ class Sprite {
         if (this.position.y + this.height + this.velocity.y >= canvas.height){
             this.velocity.y = 0
         } else this.velocity.y += gravity
+    }
+
+    attack() {
+        this.isAttacking = true
+        setTimeout(() => {
+            this.isAttacking = false
+        }, 100)
     }
 }
 
@@ -121,6 +132,12 @@ function animate() {
     } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
         enemy.velocity.x = 3
     }
+
+    // Detect Collision
+    if (player.hitBox.position.x + player.hitBox.width >= enemy.position.x && player.hitBox.position.x <= enemy.position.x + enemy.width && player.hitBox.position.y + player.hitBox.height >= enemy.position.y && player.hitBox.position.y <= enemy.position.y + enemy.height && player.isAttacking) {
+        player.isAttacking = false;
+        console.log('HIT!');
+    }
 }
 
 animate()
@@ -137,6 +154,9 @@ window.addEventListener('keydown', (e) => {
             break
         case 'w':
             player.velocity.y = -20
+            break
+        case ' ':
+            player.attack()
             break
         case 'ArrowRight':
             keys.ArrowRight.pressed = true
