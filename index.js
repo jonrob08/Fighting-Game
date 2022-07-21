@@ -133,23 +133,28 @@ function rectangularCollisionDetect({
     )
 }
 
+function determineWinner({ player, enemy, timerId }) {
+    clearTimeout(timerId)
+    document.querySelector('#displayResult').style.display = 'flex'
+    if (player.health > enemy.health) {
+        document.querySelector('#displayResult').innerHTML = 'Player 1 Wins'
+    } else if (player.health < enemy.health) {
+        document.querySelector('#displayResult').innerHTML = 'Player 2 Wins'
+    } else {
+        document.querySelector('#displayResult').innerHTML = 'issa tie'
+    } 
+}
 
 let timer = 60
-function decreaseTimer(){
-    setTimeout(decreaseTimer, 1000)
+let timerId
+function decreaseTimer(){ 
     if(timer > 0) {
+        timerId = setTimeout(decreaseTimer, 1000)
         timer--
         document.querySelector('#timer').innerHTML = timer
     }
     if (timer === 0) {
-        document.querySelector('#displayResult').style.display = 'flex'
-        if (player.health > enemy.health) {
-            document.querySelector('#displayResult').innerHTML = 'Player 1 Wins'
-        } else if (player.health < enemy.health) {
-            document.querySelector('#displayResult').innerHTML = 'Player 2 Wins'
-        } else {
-            document.querySelector('#displayResult').innerHTML = 'issa tie'
-        } 
+        determineWinner({ player, enemy, timerId })
     } 
 }
 
@@ -180,7 +185,8 @@ function animate() {
         enemy.velocity.x = 3
     }
 
-    // Detect Collision - ATTACK
+    // Detect Collision 
+        // Player Attack
     if ( 
         rectangularCollisionDetect({
             rectangle1: player,
@@ -192,7 +198,7 @@ function animate() {
         console.log('PLAYER HIT ENEMY!');
         document.querySelector('#enemyHealth').style.width = enemy.health + "%"
     }
-
+        // Enemy Attack
     if ( 
         rectangularCollisionDetect({
             rectangle1: enemy,
@@ -203,6 +209,11 @@ function animate() {
         player.health -= 20
         console.log('ENEMY HIT PLAYER!');
         document.querySelector('#playerHealth').style.width = player.health + "%"
+    }
+
+    // end the game based on health
+    if (enemy.health <= 0 || player.health <= 0) {
+        determineWinner({ player, enemy, timerId })
     }
 }
 
