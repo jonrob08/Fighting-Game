@@ -133,6 +133,28 @@ function rectangularCollisionDetect({
     )
 }
 
+
+let timer = 60
+function decreaseTimer(){
+    setTimeout(decreaseTimer, 1000)
+    if(timer > 0) {
+        timer--
+        document.querySelector('#timer').innerHTML = timer
+    }
+    if (timer === 0) {
+        document.querySelector('#displayResult').style.display = 'flex'
+        if (player.health > enemy.health) {
+            document.querySelector('#displayResult').innerHTML = 'Player 1 Wins'
+        } else if (player.health < enemy.health) {
+            document.querySelector('#displayResult').innerHTML = 'Player 2 Wins'
+        } else {
+            document.querySelector('#displayResult').innerHTML = 'issa tie'
+        } 
+    } 
+}
+
+decreaseTimer()
+
 function animate() {
     window.requestAnimationFrame(animate)
     ctx.fillStyle = 'black'
@@ -178,7 +200,9 @@ function animate() {
         }) && enemy.isAttacking
     ) {
         enemy.isAttacking = false;
+        player.health -= 20
         console.log('ENEMY HIT PLAYER!');
+        document.querySelector('#playerHealth').style.width = player.health + "%"
     }
 }
 
