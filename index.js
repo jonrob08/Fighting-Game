@@ -10,14 +10,19 @@ const gravity = 0.5
 
 class Sprite {
     // Since we always want to set a position first and a velocity second, we will wrap the two parameters in {} to create a singular object
-    constructor({ position, velocity, color = 'red' }) {
+    constructor({ position, velocity, color = 'red', offset }) {
         this.position = position
         this.velocity = velocity
         this.width = 50
         this.height = 150
         this.lastKey
         this.hitBox = {
-            position: this.position,
+            position: {
+                x: this.position.x,
+                y: this.position.y 
+            },
+            // equal to offset: offset,
+            offset,
             width: 100,
             height: 50
         }
@@ -38,6 +43,8 @@ class Sprite {
 
     update() {
         this.draw()
+        this.hitBox.position.x = this.position.x - this.hitBox.offset.x
+        this.hitBox.position.y = this.position.y
 
 
         this.position.x += this.velocity.x
@@ -65,6 +72,10 @@ const player = new Sprite({
     velocity: {
         x:0,
         y:0
+    },
+    offset: {
+        x: 0,
+        y: 0
     }
 })
 
@@ -80,7 +91,11 @@ const enemy = new Sprite({
         x:0,
         y:0
     },
-    color: 'blue'
+    color: 'blue',
+    offset: {
+        x: 50,
+        y: 0
+    }
 })
 
 enemy.draw()
@@ -106,7 +121,13 @@ const keys = {
     }
 }
 
-let lastKey
+function rectangularCollisionDetect({
+    rectangle1, rectangle2
+}) {
+    return (
+        rectangle1.hitBox.position.x + rectangle1.hitBox.width >= rectangle2.position.x && rectangle1.hitBox.position.x <= rectangle2.position.x + rectangle2.width && rectangle1.hitBox.position.y + rectangle1.hitBox.height >= rectangle2.position.y && rectangle1.hitBox.position.y <= rectangle2.position.y + rectangle2.height
+    )
+}
 
 function animate() {
     window.requestAnimationFrame(animate)
@@ -118,9 +139,9 @@ function animate() {
     // Player Movement
     player.velocity.x = 0
 
-    if (keys.a.pressed && lastKey === 'a') {
+    if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -3
-    } else if (keys.d.pressed && lastKey === 'd') {
+    } else if (keys.d.pressed && player.lastKey === 'd') {
         player.velocity.x = 3
     }
 
@@ -134,9 +155,24 @@ function animate() {
     }
 
     // Detect Collision
-    if (player.hitBox.position.x + player.hitBox.width >= enemy.position.x && player.hitBox.position.x <= enemy.position.x + enemy.width && player.hitBox.position.y + player.hitBox.height >= enemy.position.y && player.hitBox.position.y <= enemy.position.y + enemy.height && player.isAttacking) {
+    if ( 
+        rectangularCollisionDetect({
+            rectangle1: player,
+            rectangle2: enemy
+        }) && player.isAttacking
+    ) {
         player.isAttacking = false;
-        console.log('HIT!');
+        console.log('PLAYER HIT!');
+    }
+
+    if ( 
+        rectangularCollisionDetect({
+            rectangle1: enemy,
+            rectangle2: player
+        }) && enemy.isAttacking
+    ) {
+        enemy.isAttacking = false;
+        console.log('ENEMY HIT!');
     }
 }
 
@@ -146,11 +182,11 @@ window.addEventListener('keydown', (e) => {
     switch (e.key) {
         case 'd':
             keys.d.pressed = true
-            lastKey = 'd'
+            player.lastKey = 'd'
             break
         case 'a':
             keys.a.pressed = true
-            lastKey = 'a'
+            player.lastKey = 'a'
             break
         case 'w':
             player.velocity.y = -20
@@ -169,8 +205,10 @@ window.addEventListener('keydown', (e) => {
         case 'ArrowUp':
             enemy.velocity.y = -20
             break
+        case 'ArrowDown':
+            enemy.attack()
+            break
     }
-    console.log(e.key)
 })
 
 window.addEventListener('keyup', (e) => {
@@ -192,5 +230,4 @@ window.addEventListener('keyup', (e) => {
         keys.ArrowRight.pressed = false
             break
     }
-    console.log(e.key)
 })
