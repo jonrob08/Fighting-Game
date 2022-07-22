@@ -1,21 +1,21 @@
-// class Sprite {
-//     // Since we always want to set a position first and a velocity second, we will wrap the two parameters in {} to create a singular object
-//     constructor({ position, imageSrc }) {
-//         this.position = position
-//         this.width = 50
-//         this.height = 150
-//         this.image = new Image()
-//         this.image.src = imageSrc
-//     }
+class Sprite {
+    // Since we always want to set a position first and a velocity second, we will wrap the two parameters in {} to create a singular object
+    constructor({ position, imageSrc }) {
+        this.position = position
+        this.width = 50
+        this.height = 150
+        this.image = new Image()
+        this.image.src = imageSrc
+    }
 
-//     draw() {
-//         ctx.drawImage(this.image, this.position.x, this.position.y)
-//     }
+    draw() {
+        ctx.drawImage(this.image, this.position.x, this.position.y)
+    }
     
-//     update() {
-//         this.draw()
-//     }
-// }
+    update() {
+        this.draw()
+    }
+}
 
 class Fighter {
     // Since we always want to set a position first and a velocity second, we will wrap the two parameters in {} to create a singular object
@@ -48,7 +48,7 @@ class Fighter {
         if (this.isAttacking) {
             ctx.fillStyle = 'green'
             ctx.fillRect(this.hitBox.position.x, this.hitBox.position.y, this.hitBox.width, this.hitBox.height)
-        }
+         }
     }
 
     update() {

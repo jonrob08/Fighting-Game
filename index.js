@@ -13,12 +13,12 @@ const background = new Sprite({
         x: 0,
         y: 0
     },
-    ImageSrc: "./assets/background/background.png"
+    imageSrc: "./img/background.png"
 })
 
 const player = new Fighter({
     position: {
-        x: 0,
+        x: 100,
         y: 0
     },
     velocity: {
@@ -78,11 +78,12 @@ function rectangularCollisionDetect({
 }) {
     return (
         rectangle1.hitBox.position.x + rectangle1.hitBox.width >= rectangle2.position.x 
-        && rectangle1.hitBox.position.x <= rectangle2.position.x + rectangle2.width 
+         && rectangle1.hitBox.position.x <= rectangle2.position.x + rectangle2.width 
         && rectangle1.hitBox.position.y + rectangle1.hitBox.height >= rectangle2.position.y 
         && rectangle1.hitBox.position.y <= rectangle2.position.y + rectangle2.height
     )
 }
+
 
 function determineWinner({ player, enemy, timerId }) {
     clearTimeout(timerId)
@@ -182,7 +183,7 @@ window.addEventListener('keydown', (e) => {
             player.lastKey = 'a'
             break
         case 'w':
-            player.velocity.y = -20
+            player.velocity.y = -15
             break
         case ' ':
             player.attack()
