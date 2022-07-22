@@ -6,7 +6,7 @@ canvas.height = 576;
 
 ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-const gravity = 0.5
+const gravity = 0.05 //0.5
 
 const background = new Sprite({
     position: {
@@ -38,6 +38,48 @@ const player = new Fighter({
     offset: {
         x: 0,
         y: 0
+    },
+    imageSrc: './img/character/samuraiMack/Idle.png',
+    scale: 2.75,
+    framesMax: 8,
+    offset: {
+        x: 215,
+        y: 185
+    },
+    sprites: {
+        idle: {
+            imageSrc: './img/character/samuraiMack/Idle.png',
+            framesMax: 8
+        },
+        revidle: {
+            imageSrc: './img/character/samuraiMack/rev_Idle.png',
+            framesMax: 8
+        },
+        run: {
+            imageSrc: './img/character/samuraiMack/Run.png',
+            framesMax: 8
+        },
+        revrun: {
+            imageSrc: './img/character/samuraiMack/rev_Run.png',
+            framesMax: 8
+        },
+        jump: {
+            imageSrc: './img/character/samuraiMack/Jump.png',
+            framesMax: 2
+        },
+        revjump: {
+            imageSrc: './img/character/samuraiMack/rev_Jump.png',
+            framesMax: 2
+        },
+        fall: {
+            imageSrc: './img/character/samuraiMack/Fall.png',
+            framesMax: 2
+        },
+        revfall: {
+            imageSrc: './img/character/samuraiMack/rev_Fall.png',
+            framesMax: 2
+        },
+        
     }
 })
 
@@ -92,17 +134,48 @@ function animate() {
     background.update()
     shop.update()
     player.update()
-    enemy.update()
+    // enemy.update()
 
-    // Player Movement
-    player.velocity.x = 0
-
+    // Player Movement - Left, Right
+    if(player.velocity.x = 0){
+        player.switchSprite('idle')
+    }
+    
+    
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -3
+        player.switchSprite('revrun')
     } else if (keys.d.pressed && player.lastKey === 'd') {
         player.velocity.x = 3
+        player.switchSprite('run')
+    } else if (player.lastKey === 'a')
+    {
+        player.switchSprite('revidle')
+    } else if (player.lastKey === 'd'){
+        player.switchSprite('idle')
     }
 
+    // Player Movement - Jumping
+    if (keys.w.pressed && player.lastKey === 'a' && player.velocity.y < 0) {
+        console.log("revjump")
+        player.switchSprite('revjump')
+    } else if (keys.w.pressed && player.lastKey === 'a' && player.velocity.y < 0) {
+        console.log("revjump")
+        player.switchSprite('revjump')
+    } else if (keys.w.pressed && player.lastKey === 'a' && player.velocity.y > 0) {
+        console.log("revfall")
+        player.switchSprite('revfall')
+    } else if (keys.w.pressed && player.velocity.y < 0) {
+        console.log("jump")
+        player.switchSprite('jump')
+    } else if (keys.w.pressed && player.velocity.y > 0) {
+        console.log("fall")
+        player.switchSprite('fall')
+    } else if (player.velocity.x === 0 && player.lastKey === 'a'){
+        player.switchSprite('revidle')
+    } else if(player.velocity.x === 0 && player.lastKey === 'd') {
+        player.switchSprite('idle')
+    }
     // Enemy Movement
     enemy.velocity.x = 0
     
@@ -157,7 +230,8 @@ window.addEventListener('keydown', (e) => {
             player.lastKey = 'a'
             break
         case 'w':
-            player.velocity.y = -15
+            keys.w.pressed = true
+            player.velocity.y = -2
             break
         case ' ':
             player.attack()
