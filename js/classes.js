@@ -137,13 +137,29 @@ class Fighter extends Sprite {
     }
 
     attack() {
+        if (this.lastKey === 'a') {
+            this.switchSprite('revattack1')
+        }
+        this.switchSprite('attack1')
+        
         this.isAttacking = true
         setTimeout(() => {
             this.isAttacking = false
-        }, 100)
+        }, 1000)
     }
 
     switchSprite(sprite) {
+        if (
+            this.image === this.sprites.attack1.image && this.framesCurrent < this.sprites.attack1.framesMax -1
+            ) {
+                return
+            }else if (
+                this.image === this.sprites.revattack1.image && this.framesCurrent < this.sprites.revattack1.framesMax -1
+            ) {
+                return
+            }
+            
+
         switch (sprite) {
             case 'idle':
                 if(this.image !== this.sprites.idle.image)
@@ -206,6 +222,22 @@ class Fighter extends Sprite {
                 {
                 this.image = this.sprites.revfall.image;
                 this.framesMax = this.sprites.revfall.framesMax;
+                this.framesCurrent = 0;
+                }
+            break
+            case 'attack1':
+                if(this.image !== this.sprites.attack1.image)
+                {
+                this.image = this.sprites.attack1.image;
+                this.framesMax = this.sprites.attack1.framesMax;
+                this.framesCurrent = 0;
+                }
+            break
+            case 'revattack1':
+                if(this.image !== this.sprites.revattack1.image)
+                {
+                this.image = this.sprites.revattack1.image;
+                this.framesMax = this.sprites.revattack1.framesMax;
                 this.framesCurrent = 0;
                 }
             break

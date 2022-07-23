@@ -79,11 +79,17 @@ const player = new Fighter({
             imageSrc: './img/character/samuraiMack/rev_Fall.png',
             framesMax: 2
         },
+        attack1: {
+            imageSrc: './img/character/samuraiMack/Attack1.png',
+            framesMax: 6
+        },
+        revattack1: {
+            imageSrc: './img/character/samuraiMack/rev_Attack1.png',
+            framesMax: 6
+        }
         
     }
 })
-
-player.draw()
 
 
 const enemy = new Fighter({
@@ -99,10 +105,58 @@ const enemy = new Fighter({
     offset: {
         x: 50,
         y: 0
+    },
+    imageSrc: './img/character/kenji/Idle.png',
+    scale: 2.7,
+    framesMax: 4,
+    offset: {
+        x: 215,
+        y: 200
+    },
+    sprites: {
+        idle: {
+            imageSrc: './img/character/kenji/Idle.png',
+            framesMax: 4
+        },
+        revidle: {
+            imageSrc: './img/character/kenji/rev_Idle.png',
+            framesMax: 4
+        },
+        run: {
+            imageSrc: './img/character/kenji/Run.png',
+            framesMax: 8
+        },
+        revrun: {
+            imageSrc: './img/character/kenji/rev_Run.png',
+            framesMax: 8
+        },
+        jump: {
+            imageSrc: './img/character/kenji/Jump.png',
+            framesMax: 2
+        },
+        revjump: {
+            imageSrc: './img/character/kenji/rev_Jump.png',
+            framesMax: 2
+        },
+        fall: {
+            imageSrc: './img/character/kenji/Fall.png',
+            framesMax: 2
+        },
+        revfall: {
+            imageSrc: './img/character/kenji/rev_Fall.png',
+            framesMax: 2
+        },
+        attack1: {
+            imageSrc: './img/character/kenji/Attack1.png',
+            framesMax: 4
+        },
+        revattack1: {
+            imageSrc: './img/character/kenji/rev_Attack1.png',
+            framesMax: 4
+        }
+        
     }
 })
-
-enemy.draw()
 
 const keys = {
     a: {
@@ -134,13 +188,12 @@ function animate() {
     background.update()
     shop.update()
     player.update()
-    // enemy.update()
-
+    enemy.update()
+    
     // Player Movement - Left, Right
     if(player.velocity.x = 0){
-        player.switchSprite('idle')
+        player.switchSprite('idle')  
     }
-    
     
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -3
@@ -176,14 +229,43 @@ function animate() {
     } else if(player.velocity.x === 0 && player.lastKey === 'd') {
         player.switchSprite('idle')
     }
-    // Enemy Movement
-    enemy.velocity.x = 0
     
-    if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
-        enemy.velocity.x = -3
-    } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
-        enemy.velocity.x = 3
+    
+   // Enemy Movement - Left, Right
+    if(enemy.velocity.x = 0){
+        enemy.switchSprite('idle')  
     }
+
+    if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
+        enemy.velocity.x = -1
+        enemy.switchSprite('run')
+    } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
+        enemy.velocity.x = 1
+        enemy.switchSprite('revrun')
+    } else if (enemy.lastKey === 'ArrowLeft')
+    {
+        enemy.switchSprite('idle')
+    } else if (enemy.lastKey === 'ArrowRight'){
+        enemy.switchSprite('revidle')
+    }
+
+    // Enemy Movement - Jumping
+    if (keys.ArrowUp.pressed && enemy.lastKey === 'ArrowLeft' && enemy.velocity.y < 0) {
+        enemy.switchSprite('jump')
+    } else if (keys.ArrowUp.pressed && enemy.lastKey === 'ArrowRight' && enemy.velocity.y < 0) {
+        enemy.switchSprite('revjump')
+    } else if (keys.ArrowUp.pressed && enemy.lastKey === 'ArrowLeft' && enemy.velocity.y > 0) {  
+        enemy.switchSprite('fall')
+    } else if (keys.ArrowUp.pressed && enemy.velocity.y < 0) {
+        enemy.switchSprite('jump')
+    } else if (keys.ArrowUp.pressed && enemy.velocity.y > 0) {
+        enemy.switchSprite('revfall')
+    } else if (enemy.velocity.x === 0 && enemy.lastKey === 'ArrowLeft'){
+        enemy.switchSprite('idle')
+    } else if(enemy.velocity.x === 0 && enemy.lastKey === 'ArrowRight') {
+        enemy.switchSprite('revidle')
+    }
+
 
     // Detect Collision 
         // Player Attack
@@ -245,7 +327,8 @@ window.addEventListener('keydown', (e) => {
             enemy.lastKey = 'ArrowLeft'
             break
         case 'ArrowUp':
-            enemy.velocity.y = -20
+            keys.ArrowUp.pressed = true
+            enemy.velocity.y = -2
             break
         case 'ArrowDown':
             enemy.attack()
